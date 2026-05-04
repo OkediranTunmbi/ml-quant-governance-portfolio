@@ -1,4 +1,4 @@
-# Model Risk Governance Toolkit — Lending Club Credit Risk
+﻿# Model Risk Governance Toolkit â€” Lending Club Credit Risk
 
 A production-oriented model risk management toolkit built around a Logistic Regression
 credit default classifier trained on Lending Club data. Covers the full SR 11-7 model
@@ -13,9 +13,9 @@ validation report.
 SR 11-7 (Supervisory Guidance on Model Risk Management, Federal Reserve / OCC, 2011)
 is the primary US regulatory framework governing model risk at banks. It requires:
 
-1. **Model development** — documented conceptual soundness, data quality, performance evaluation
-2. **Model validation** — independent review by a team that did not build the model
-3. **Ongoing monitoring** — drift detection, performance tracking, periodic review
+1. **Model development** â€” documented conceptual soundness, data quality, performance evaluation
+2. **Model validation** â€” independent review by a team that did not build the model
+3. **Ongoing monitoring** â€” drift detection, performance tracking, periodic review
 
 This toolkit implements each of those requirements programmatically, so every stage is
 reproducible, auditable, and backed by statistical evidence.
@@ -26,28 +26,28 @@ reproducible, auditable, and backed by statistical evidence.
 
 ```
 data/raw/lending_club.csv
-        │
-        ▼
-[toolkit/data_validation.py]   ← Schema checks, leakage exclusions, target binarisation
-        │
-        ▼
-[toolkit/preprocessing.py]     ← Feature engineering, OrdinalEncoder, OHE, StandardScaler
-        │           (fit on train only)
-        ▼
-[toolkit/model.py]             ← Logistic Regression, AUC/Gini/KS evaluation, SHAP
-        │
-        ├──► [toolkit/threshold_governance.py]  ← Threshold sweep, 3 candidate thresholds
-        │
-        ├──► [toolkit/drift.py]                 ← PSI, KS test, prediction drift, target drift
-        │    [monitoring/evidently_dashboard.py] ← Visual drift/quality/performance dashboards
-        │
-        ├──► [toolkit/calibration.py]            ← Platt scaling, ECE, reliability diagrams
-        │
-        ├──► [toolkit/fairness.py]               ← 80% rule, equalized odds, predictive parity
-        │
-        └──► [toolkit/report.py]                 ← Jinja2 HTML validation report
-                        │
-                        ▼
+        â”‚
+        â–¼
+[toolkit/data_validation.py]   â† Schema checks, leakage exclusions, target binarisation
+        â”‚
+        â–¼
+[toolkit/preprocessing.py]     â† Feature engineering, OrdinalEncoder, OHE, StandardScaler
+        â”‚           (fit on train only)
+        â–¼
+[toolkit/model.py]             â† Logistic Regression, AUC/Gini/KS evaluation, SHAP
+        â”‚
+        â”œâ”€â”€â–º [toolkit/threshold_governance.py]  â† Threshold sweep, 3 candidate thresholds
+        â”‚
+        â”œâ”€â”€â–º [toolkit/drift.py]                 â† PSI, KS test, prediction drift, target drift
+        â”‚    [monitoring/evidently_dashboard.py] â† Visual drift/quality/performance dashboards
+        â”‚
+        â”œâ”€â”€â–º [toolkit/calibration.py]            â† Platt scaling, ECE, reliability diagrams
+        â”‚
+        â”œâ”€â”€â–º [toolkit/fairness.py]               â† 80% rule, equalized odds, predictive parity
+        â”‚
+        â””â”€â”€â–º [toolkit/report.py]                 â† Jinja2 HTML validation report
+                        â”‚
+                        â–¼
              reports/output/validation_report_YYYY-MM-DD.html
 ```
 
@@ -105,9 +105,9 @@ path = render_report(results)
 ### Evidently Dashboards (open in browser)
 
 ```
-reports/output/evidently_drift.html        ← Feature distribution drift (train vs monitor)
-reports/output/evidently_quality.html      ← Data quality on monitor set
-reports/output/evidently_performance.html  ← Classification performance comparison
+reports/output/evidently_drift.html        â† Feature distribution drift (train vs monitor)
+reports/output/evidently_quality.html      â† Data quality on monitor set
+reports/output/evidently_performance.html  â† Classification performance comparison
 ```
 
 ### Validation Report
@@ -124,50 +124,32 @@ Open in any browser. The report is fully self-contained (all images are base64-e
 
 ```
 model_risk_governance/
-├── data/
-│   ├── raw/lending_club.csv          ← Source data (place here)
-│   └── processed/                    ← Train/monitor parquets, model pkl, metrics JSON
-├── toolkit/
-│   ├── data_validation.py            ← Schema checks, leakage exclusions
-│   ├── preprocessing.py              ← Feature engineering, encoding, scaling
-│   ├── model.py                      ← LR training, evaluation, SHAP
-│   ├── drift.py                      ← PSI, KS, prediction/target drift
-│   ├── calibration.py                ← Platt scaling, ECE, reliability diagrams
-│   ├── fairness.py                   ← Disparate impact, equalized odds
-│   ├── threshold_governance.py       ← Threshold sweep, 3 candidate thresholds
-│   └── report.py                     ← Jinja2 report generator
-├── monitoring/
-│   └── evidently_dashboard.py        ← Evidently drift + quality + performance
-├── notebooks/
-│   ├── 01_eda.ipynb                  ← EDA, class balance, temporal patterns
-│   ├── 02_model_development.ipynb    ← Training, SHAP, threshold selection
-│   ├── 03_validation.ipynb           ← Drift, calibration, fairness
-│   └── 04_governance_report.ipynb    ← Evidently + HTML report rendering
-├── reports/
-│   ├── templates/validation_report.html
-│   └── output/                       ← Generated reports
-├── model_card.md
-├── requirements.txt
-└── README.md
+â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ raw/lending_club.csv          â† Source data (place here)
+â”‚   â””â”€â”€ processed/                    â† Train/monitor parquets, model pkl, metrics JSON
+â”œâ”€â”€ toolkit/
+â”‚   â”œâ”€â”€ data_validation.py            â† Schema checks, leakage exclusions
+â”‚   â”œâ”€â”€ preprocessing.py              â† Feature engineering, encoding, scaling
+â”‚   â”œâ”€â”€ model.py                      â† LR training, evaluation, SHAP
+â”‚   â”œâ”€â”€ drift.py                      â† PSI, KS, prediction/target drift
+â”‚   â”œâ”€â”€ calibration.py                â† Platt scaling, ECE, reliability diagrams
+â”‚   â”œâ”€â”€ fairness.py                   â† Disparate impact, equalized odds
+â”‚   â”œâ”€â”€ threshold_governance.py       â† Threshold sweep, 3 candidate thresholds
+â”‚   â””â”€â”€ report.py                     â† Jinja2 report generator
+â”œâ”€â”€ monitoring/
+â”‚   â””â”€â”€ evidently_dashboard.py        â† Evidently drift + quality + performance
+â”œâ”€â”€ notebooks/
+â”‚   â”œâ”€â”€ 01_eda.ipynb                  â† EDA, class balance, temporal patterns
+â”‚   â”œâ”€â”€ 02_model_development.ipynb    â† Training, SHAP, threshold selection
+â”‚   â”œâ”€â”€ 03_validation.ipynb           â† Drift, calibration, fairness
+â”‚   â””â”€â”€ 04_governance_report.ipynb    â† Evidently + HTML report rendering
+â”œâ”€â”€ reports/
+â”‚   â”œâ”€â”€ templates/validation_report.html
+â”‚   â””â”€â”€ output/                       â† Generated reports
+â”œâ”€â”€ model_card.md
+â”œâ”€â”€ requirements.txt
+â””â”€â”€ README.md
 ```
-
----
-
-## Resume-Ready Bullets
-
-_(Fill in metric placeholders after running the full pipeline)_
-
-- **Built end-to-end model risk toolkit** for a credit default classifier on 1M+ Lending Club
-  loans, covering data validation, drift detection, calibration, and fairness analysis
-  aligned with SR 11-7 model risk management guidance
-
-- **Implemented PSI and KS-based feature drift monitoring** across train/monitor temporal
-  splits, flagging [N] features with significant distributional shift post-2015 and producing
-  auto-generated Evidently HTML dashboards for risk committee review
-
-- **Conducted fair lending analysis** using geographic and credit-age proxies, identifying
-  [X]pp approval rate disparity across Census regions under the 80% ECOA disparate impact
-  rule, and documented the fairness impossibility result and its regulatory implications
 
 ---
 
@@ -186,3 +168,4 @@ _(Fill in metric placeholders after running the full pipeline)_
 | ECOA 80% disparate impact rule | `toolkit/fairness.py` |
 | Threshold as business decision | `toolkit/threshold_governance.py` + notebook 02 |
 | Independent model validation | `toolkit/report.py` + notebook 04 |
+
