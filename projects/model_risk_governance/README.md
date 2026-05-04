@@ -155,8 +155,6 @@ model_risk_governance/
 
 ## Resume-Ready Bullets
 
-_(Fill in metric placeholders after running the full pipeline)_
-
 - **Built end-to-end model risk toolkit** for a credit default classifier on 1M+ Lending Club
   loans, covering data validation, drift detection, calibration, and fairness analysis
   aligned with SR 11-7 model risk management guidance
