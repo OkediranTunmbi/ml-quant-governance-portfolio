@@ -62,7 +62,6 @@ data/raw/lending_club.csv
 pip install -r requirements.txt
 ```
 
-Place `lending_club.csv` in `data/raw/`
 
 ### Stage-by-stage
 
