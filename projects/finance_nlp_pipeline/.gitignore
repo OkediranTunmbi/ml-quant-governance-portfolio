@@ -1,0 +1,26 @@
+# --- secrets ---
+.env
+
+# --- MLflow run artifacts (can be hundreds of MB) ---
+mlruns/
+mlflow.db
+
+# --- API response cache (regeneratable, potentially large) ---
+data/cache/
+
+# --- Model weights (too large for git) ---
+models/checkpoints/
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS ---
+.DS_Store
+Thumbs.db

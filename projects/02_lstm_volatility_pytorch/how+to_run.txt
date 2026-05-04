@@ -1,0 +1,5 @@
+cd ml-quant-governance-portfolio\projects\02_lstm_volatility_pytorch
+pip install -r requirements.txt
+python -m data.fetch
+python run_experiments.py
+jupyter notebook notebooks\02_results.ipynb

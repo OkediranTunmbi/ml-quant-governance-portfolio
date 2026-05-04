@@ -1,0 +1,11 @@
+text,label_str,pred_str,confidence
+"Operating loss was EUR 179mn , compared to a loss of EUR 188mn in the second quarter of 2009 .",positive,negative,0.97153646
+Unit costs for flight operations fell by 6.4 percent .,positive,negative,0.9678426
+"ADP News - Apr 22 , 2009 - Finnish business information systems developer Solteq Oyj HEL : STQ1V said today its net loss widened to EUR 189,000 USD 245,000 for the first quarter of 2009 from EUR 10,000 for the same peri",negative,positive,0.93367845
+"However , the broker gave an `` outperform '' recommendation on the stock .",positive,negative,0.8420303
+The group reiterated its forecast that handset manufacturers will sell around 915 mln units this year globally .,neutral,positive,0.82716405
+"Fortum needs a clear signal of commitment from the Government that the permit is available before the company will start the next round , Kuula says .",neutral,positive,0.8227226
+"Previously , EB delivered a custom solution for LG Electronics and now is making it commercially available for other mobile terminal vendors as well as to wireless operators .",positive,neutral,0.76467425
+`` These developments partly reflect the government 's higher activity in the field of dividend policy . '',neutral,positive,0.7524207
+"The facility will be used to refinance Citycon 's existing credit facility , the company said .",neutral,positive,0.7203388
+Finnish Talvivaara Mining Co HEL : TLV1V said Thursday it had picked BofA Merrill Lynch and JPMorgan NYSE : JPM as joint bookrunners of its planned issue of convertible notes worth up to EUR250m USD332m .,neutral,positive,0.7192291

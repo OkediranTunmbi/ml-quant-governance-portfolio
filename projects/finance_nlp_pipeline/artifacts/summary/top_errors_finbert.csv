@@ -1,0 +1,10 @@
+text,true_label,pred_label,confidence
+"Previously , EB delivered a custom solution for LG Electronics and now is making it commercially available for other mobile terminal vendors as well as to wireless operators .",positive,neutral,0.9949669
+Unit costs for flight operations fell by 6.4 percent .,positive,negative,0.9912164
+"Operating loss was EUR 179mn , compared to a loss of EUR 188mn in the second quarter of 2009 .",positive,negative,0.9905924
+"Profitability ( EBIT % ) was 13.6 % , compared to 14.3 % in Q2 2009 .",negative,positive,0.98689634
+"In Finland , the city of Forssa has said it will not pay compensation to food industry companies HK Ruokatalo and Atria for the lye leak into tap water that occurred in March 2008 .",negative,neutral,0.9787622
+"Once your plants are in the ground they will continue to grow , but the success of any garden lies in how well it 's maintained .",neutral,positive,0.95130676
+Net profit was 35.5 mln compared with 29.8 mln .,positive,negative,0.9312579
+"YIT lodged counter claims against Neste Oil totaling some EUR25m , primarily based on work carried out under the contract and additional costs incurred due to prolongation of the project .",negative,neutral,0.8982383
+"However , the broker gave an `` outperform '' recommendation on the stock .",positive,negative,0.74712694

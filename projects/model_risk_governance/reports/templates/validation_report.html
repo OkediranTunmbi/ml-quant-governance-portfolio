@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Validation Report — {{ model_name }}</title>
+<style>
+  :root {
+    --navy: #0a2342; --blue: #1a73e8; --green: #1e7e34;
+    --amber: #e65c00; --red: #c0392b; --light: #f8f9fa; --border: #dee2e6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px;
+         color: #212529; background: #fff; }
+  .page-wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+  /* Header */
+  .report-header { background: var(--navy); color: #fff; padding: 28px 32px;
+                   border-radius: 4px; margin-bottom: 24px; }
+  .report-header h1 { font-size: 22px; margin-bottom: 6px; }
+  .report-header .meta { font-size: 12px; opacity: 0.8; }
+
+  /* Recommendation banner */
+  .recommendation { padding: 14px 20px; border-radius: 4px; font-weight: 600;
+                    font-size: 16px; margin-bottom: 24px; }
+  .rec-approve  { background: #d4edda; color: var(--green); border-left: 5px solid var(--green); }
+  .rec-conditions { background: #fff3cd; color: var(--amber); border-left: 5px solid var(--amber); }
+  .rec-reject   { background: #f8d7da; color: var(--red); border-left: 5px solid var(--red); }
+
+  /* Section headings */
+  h2 { font-size: 16px; color: var(--navy); border-bottom: 2px solid var(--navy);
+       padding-bottom: 6px; margin: 28px 0 14px; }
+  h3 { font-size: 13px; color: #444; margin: 14px 0 8px; font-weight: 600; }
+
+  /* Tables */
+  .table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 12px; }
+  .table th { background: var(--navy); color: #fff; padding: 7px 10px; text-align: left; }
+  .table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .table tr:nth-child(even) td { background: var(--light); }
+  .flag-high   { background: #f8d7da !important; color: var(--red); font-weight: 600; }
+  .flag-medium { background: #fff3cd !important; color: var(--amber); font-weight: 600; }
+  .flag-low    { background: #d4edda !important; color: var(--green); }
+  .flag-ok     { color: var(--green); font-weight: 600; }
+  .flag-bad    { color: var(--red);   font-weight: 600; }
+
+  /* Metric cards */
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .metric-card { background: var(--light); border: 1px solid var(--border);
+                 border-radius: 4px; padding: 12px 14px; }
+  .metric-card .label { font-size: 11px; color: #666; margin-bottom: 4px; }
+  .metric-card .value { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .metric-card .sub   { font-size: 11px; color: #888; margin-top: 2px; }
+
+  /* Images */
+  .img-block { text-align: center; margin: 12px 0; }
+  .img-block img { max-width: 100%; border: 1px solid var(--border); border-radius: 4px; }
+  .img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+
+  /* Findings */
+  .finding { border: 1px solid var(--border); border-radius: 4px; padding: 12px 16px;
+             margin-bottom: 10px; }
+  .finding-title { font-weight: 600; margin-bottom: 4px; }
+  .finding-desc  { font-size: 12px; color: #555; }
+  .risk-high   { border-left: 4px solid var(--red);   }
+  .risk-medium { border-left: 4px solid var(--amber); }
+  .risk-low    { border-left: 4px solid var(--green); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+           font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .badge-high   { background: #f8d7da; color: var(--red);   }
+  .badge-medium { background: #fff3cd; color: var(--amber); }
+  .badge-low    { background: #d4edda; color: var(--green); }
+
+  /* Footer */
+  .footer { font-size: 11px; color: #999; border-top: 1px solid var(--border);
+            padding-top: 12px; margin-top: 32px; }
+  .toc { background: var(--light); border: 1px solid var(--border); border-radius: 4px;
+         padding: 14px 20px; margin-bottom: 24px; }
+  .toc ul { list-style: none; columns: 2; }
+  .toc li a { color: var(--blue); text-decoration: none; font-size: 12px; }
+  .toc li a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ================================================================ HEADER -->
+<div class="report-header">
+  <h1>Independent Model Validation Report</h1>
+  <div class="meta">
+    Model: <strong>{{ model_name }}</strong> &nbsp;|&nbsp;
+    Version: {{ model_version }} &nbsp;|&nbsp;
+    Report Date: {{ report_date }} &nbsp;|&nbsp;
+    Validator: Model Risk Management (2nd Line)
+  </div>
+</div>
+
+<!-- ============================================================ RECOMMENDATION -->
+{% if recommendation == "Approve" %}
+<div class="recommendation rec-approve">
+  ✔ VALIDATOR RECOMMENDATION: {{ recommendation }}
+</div>
+{% elif recommendation == "Approve with Conditions" %}
+<div class="recommendation rec-conditions">
+  ⚠ VALIDATOR RECOMMENDATION: {{ recommendation }}
+</div>
+{% else %}
+<div class="recommendation rec-reject">
+  ✘ VALIDATOR RECOMMENDATION: {{ recommendation }}
+</div>
+{% endif %}
+
+<!-- ================================================================ TOC -->
+<div class="toc">
+  <strong>Contents</strong>
+  <ul>
+    <li><a href="#executive-summary">1. Executive Summary</a></li>
+    <li><a href="#model-description">2. Model Description</a></li>
+    <li><a href="#performance">3. Performance Summary</a></li>
+    <li><a href="#drift">4. Data Quality &amp; Drift</a></li>
+    <li><a href="#calibration">5. Calibration Assessment</a></li>
+    <li><a href="#fairness">6. Fairness Assessment</a></li>
+    <li><a href="#threshold">7. Threshold Governance</a></li>
+    <li><a href="#findings">8. Risk Controls &amp; Findings</a></li>
+    <li><a href="#recommendation-detail">9. Validator Recommendation</a></li>
+  </ul>
+</div>
+
+<!-- ====================================================== 1. EXECUTIVE SUMMARY -->
+<h2 id="executive-summary">1. Executive Summary</h2>
+<p>This report documents the independent validation of the <strong>{{ model_name }}</strong>,
+a Logistic Regression classifier trained to predict the probability of default for personal
+loans at origination. Training data covers Lending Club loans issued prior to {{ train_period }};
+model performance is evaluated on a held-out test set and monitored on loans issued from
+{{ monitor_period }}.</p>
+<p>The model was developed in accordance with the SR 11-7 model lifecycle framework and covers
+data validation, leakage controls, model development, threshold governance, drift monitoring,
+calibration assessment, and fair lending analysis.</p>
+<p><strong>Overall status:</strong>
+  AUC-ROC (test) = {{ test_auc }},
+  Gini = {{ test_gini }},
+  KS = {{ test_ks }}.
+  Performance on monitor: AUC = {{ monitor_auc }} (<span
+  class="{% if perf_flag == 'OK' %}flag-ok{% else %}flag-bad{% endif %}">{{ perf_flag }}</span>).
+</p>
+
+<!-- ====================================================== 2. MODEL DESCRIPTION -->
+<h2 id="model-description">2. Model Description</h2>
+<table class="table">
+  <tr><th>Attribute</th><th>Detail</th></tr>
+  <tr><td>Algorithm</td><td>Logistic Regression (L2, C=1.0, class_weight='balanced')</td></tr>
+  <tr><td>Training Dataset</td><td>{{ dataset }}, {{ train_period }}</td></tr>
+  <tr><td>Monitor Dataset</td><td>Lending Club loans, {{ monitor_period }}</td></tr>
+  <tr><td>Target Variable</td><td>Binary default: 1 = Charged Off, 0 = Fully Paid</td></tr>
+  <tr><td>Excluded Statuses</td><td>Current, Late, In Grace Period (ambiguous outcomes — documented in data_validation.py)</td></tr>
+  <tr><td>Leakage Controls</td><td>32 post-origination columns explicitly excluded (see data_validation.py registry)</td></tr>
+  <tr><td>Calibration</td><td>Platt scaling (sigmoid) applied on calibration holdout</td></tr>
+  <tr><td>Threshold Policy</td><td>Three candidate thresholds documented (see Section 7)</td></tr>
+</table>
+
+<!-- ====================================================== 3. PERFORMANCE -->
+<h2 id="performance">3. Performance Summary</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">AUC-ROC (Test)</div>
+    <div class="value">{{ test_auc }}</div>
+    <div class="sub">Discrimination</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Gini (Test)</div>
+    <div class="value">{{ test_gini }}</div>
+    <div class="sub">2×AUC − 1</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">KS Statistic (Test)</div>
+    <div class="value">{{ test_ks }}</div>
+    <div class="sub">Score separation</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Monitor Status</div>
+    <div class="value {% if perf_flag == 'OK' %}flag-ok{% else %}flag-bad{% endif %}" style="font-size:14px;">
+      {{ perf_flag }}
+    </div>
+    <div class="sub">AUC Monitor = {{ monitor_auc }}</div>
+  </div>
+</div>
+
+<table class="table">
+  <tr><th>Split</th><th>AUC-ROC</th><th>Gini</th><th>KS</th></tr>
+  <tr><td>Train</td><td>{{ train_auc }}</td><td>{{ train_gini }}</td><td>{{ train_ks }}</td></tr>
+  <tr><td>Test</td><td>{{ test_auc }}</td><td>{{ test_gini }}</td><td>{{ test_ks }}</td></tr>
+  <tr><td>Monitor (post-2015)</td>
+    <td class="{% if monitor_auc != 'N/A' and perf_flag != 'OK' %}flag-bad{% endif %}">{{ monitor_auc }}</td>
+    <td>{{ monitor_gini }}</td>
+    <td>{{ monitor_ks }}</td>
+  </tr>
+</table>
+
+{% if images.roc_pr %}
+<div class="img-block">
+  <img src="{{ images.roc_pr }}" alt="ROC and PR curves">
+  <p style="font-size:11px;color:#888;">Figure 1: ROC and Precision-Recall curves on test set</p>
+</div>
+{% endif %}
+
+<!-- ====================================================== 4. DRIFT -->
+<h2 id="drift">4. Data Quality &amp; Drift</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">PSI Significant (>0.25)</div>
+    <div class="value {% if n_sig_psi > 0 %}flag-bad{% else %}flag-ok{% endif %}">{{ n_sig_psi }}</div>
+    <div class="sub">Features</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">PSI Moderate (0.10–0.25)</div>
+    <div class="value">{{ n_moderate_psi }}</div>
+    <div class="sub">Features</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">KS Drifted (p&lt;0.05)</div>
+    <div class="value {% if n_drifted_ks > 3 %}flag-bad{% endif %}">{{ n_drifted_ks }}</div>
+    <div class="sub">Features</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Score PSI</div>
+    <div class="value {% if prediction_psi != 'N/A' and prediction_psi > 0.1 %}flag-bad{% endif %}">
+      {% if prediction_psi != 'N/A' %}{{ "%.3f"|format(prediction_psi) }}{% else %}N/A{% endif %}
+    </div>
+    <div class="sub">Prediction drift</div>
+  </div>
+</div>
+
+{% if target_drift %}
+<p><strong>Target drift:</strong>
+  Reference default rate = {{ target_drift.ref_default_rate_pct }}% →
+  Monitor default rate = {{ target_drift.cur_default_rate_pct }}%
+  (Δ = <span class="{% if target_drift.flagged %}flag-bad{% else %}flag-ok{% endif %}">
+    {{ target_drift.delta_pp }}pp
+  </span>
+  {% if target_drift.flagged %}<strong>[FLAGGED]</strong>{% endif %})
+</p>
+{% endif %}
+
+<h3>PSI Table (Top 20 Features)</h3>
+{{ psi_table_html | safe }}
+
+{% if images.pred_drift %}
+<div class="img-block">
+  <img src="{{ images.pred_drift }}" alt="Score distribution drift">
+  <p style="font-size:11px;color:#888;">Figure 2: Model score distributions (train vs monitor)</p>
+</div>
+{% endif %}
+
+<!-- ====================================================== 5. CALIBRATION -->
+<h2 id="calibration">5. Calibration Assessment</h2>
+<div class="metric-grid">
+  <div class="metric-card">
+    <div class="label">ECE (Pre-calibration)</div>
+    <div class="value">{{ ece_before }}</div>
+    <div class="sub">Expected Calibration Error</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">ECE (Post-calibration)</div>
+    <div class="value">{{ ece_after }}</div>
+    <div class="sub">After Platt scaling</div>
+  </div>
+  <div class="metric-card">
+    <div class="label">Monitor ECE</div>
+    <div class="value {% if calibration_monitor.calibration_status == 'DEGRADED' %}flag-bad{% else %}flag-ok{% endif %}">
+      {{ calibration_monitor.ece_monitor if calibration_monitor else 'N/A' }}
+    </div>
+    <div class="sub">{{ calibration_monitor.calibration_status if calibration_monitor else '' }}</div>
+  </div>
+</div>
+
+{% if images.calibration %}
+<div class="img-block">
+  <img src="{{ images.calibration }}" alt="Calibration comparison">
+  <p style="font-size:11px;color:#888;">Figure 3: Reliability diagrams before and after Platt scaling</p>
+</div>
+{% endif %}
+
+<!-- ====================================================== 6. FAIRNESS -->
+<h2 id="fairness">6. Fairness Assessment</h2>
+<p style="font-size:12px;color:#666;margin-bottom:12px;">
+  <em>Note: Lending Club data contains no explicit demographic fields.
+  Analysis uses Census region (race/ethnicity proxy) and credit age quartile (age proxy).
+  Findings are indicative and require supplementary demographic analysis before regulatory action.</em>
+</p>
+
+{% for key, group_name in [("region", "Census Region"), ("age_group", "Credit Age Group")] %}
+{% if fairness and key in fairness %}
+<h3>{{ group_name }} — Approval Rates (80% Disparate Impact Rule)</h3>
+{% set apr = fairness[key].approval_rates %}
+{% if apr is not none %}
+{{ apr.to_html(index=False, classes="table", border=0) | safe }}
+{% endif %}
+<p style="font-size:12px;margin:4px 0 12px;">
+  Groups failing 80% rule:
+  <strong class="{% if fairness[key].n_flagged_80_rule > 0 %}flag-bad{% else %}flag-ok{% endif %}">
+    {{ fairness[key].n_flagged_80_rule }}
+  </strong>
+</p>
+{% if key == "region" and images.approval_region %}
+<div class="img-row">
+  <div><img src="{{ images.approval_region }}" alt="Approval rates by region">
+    <p style="font-size:11px;text-align:center;color:#888;">Approval rates — Census Region</p></div>
+  <div><img src="{{ images.eo_region }}" alt="Equalized odds by region">
+    <p style="font-size:11px;text-align:center;color:#888;">Equalized odds — Census Region</p></div>
+</div>
+{% elif key == "age_group" and images.approval_age %}
+<div class="img-row">
+  <div><img src="{{ images.approval_age }}" alt="Approval rates by credit age">
+    <p style="font-size:11px;text-align:center;color:#888;">Approval rates — Credit Age Group</p></div>
+  <div><img src="{{ images.eo_age }}" alt="Equalized odds by credit age">
+    <p style="font-size:11px;text-align:center;color:#888;">Equalized odds — Credit Age Group</p></div>
+</div>
+{% endif %}
+{% endif %}
+{% endfor %}
+
+<!-- ====================================================== 7. THRESHOLD -->
+<h2 id="threshold">7. Threshold Governance</h2>
+{% if threshold_candidates %}
+<table class="table">
+  <tr>
+    <th>Policy</th><th>Threshold</th><th>Criterion</th>
+    <th>Approval Rate</th><th>Default Rate (Approved)</th><th>F1</th><th>F2</th>
+  </tr>
+  {% for policy, info in threshold_candidates.items() %}
+  <tr>
+    <td><strong>{{ policy | capitalize }}</strong></td>
+    <td>{{ info.threshold }}</td>
+    <td style="font-size:11px;">{{ info.criterion }}</td>
+    <td>{{ "%.1f"|format(info.approval_rate * 100) }}%</td>
+    <td>{{ "%.1f"|format(info.default_rate_approved * 100) }}%</td>
+    <td>{{ info.get("f1", "—") }}</td>
+    <td>{{ info.get("f2", "—") }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{% if images.threshold_sweep %}
+<div class="img-block">
+  <img src="{{ images.threshold_sweep }}" alt="Threshold sweep">
+  <p style="font-size:11px;color:#888;">Figure 4: All metrics vs. decision threshold</p>
+</div>
+{% endif %}
+
+<!-- ====================================================== 8. FINDINGS -->
+<h2 id="findings">8. Risk Controls &amp; Findings</h2>
+{% for finding in findings %}
+<div class="finding risk-{{ finding.risk_level | lower }}">
+  <div class="finding-title">
+    {{ loop.index }}. {{ finding.title }}
+    <span class="badge badge-{{ finding.risk_level | lower }}">{{ finding.risk_level }}</span>
+  </div>
+  <div class="finding-desc">{{ finding.description }}</div>
+</div>
+{% endfor %}
+
+<!-- ====================================================== 9. RECOMMENDATION -->
+<h2 id="recommendation-detail">9. Validator Recommendation</h2>
+{% if recommendation == "Approve" %}
+<div class="recommendation rec-approve">
+  ✔ <strong>APPROVE</strong> — The model meets performance, stability, and fairness thresholds.
+  All findings are rated Low risk. The model is approved for production use at the balanced
+  threshold pending ongoing monthly monitoring.
+</div>
+{% elif recommendation == "Approve with Conditions" %}
+<div class="recommendation rec-conditions">
+  ⚠ <strong>APPROVE WITH CONDITIONS</strong> — The model demonstrates acceptable discrimination
+  power but has open findings rated Medium or High risk. Conditions:
+  <ul style="margin-top:8px;margin-left:20px;font-size:12px;">
+    {% for f in findings if f.risk_level in ["High","Medium"] %}
+    <li>{{ f.title }}</li>
+    {% endfor %}
+  </ul>
+  The model owner must resolve these conditions within 90 days and submit evidence to MRM.
+</div>
+{% else %}
+<div class="recommendation rec-reject">
+  ✘ <strong>REJECT</strong> — The model has {{ findings | selectattr("risk_level","eq","High") | list | length }}
+  High-risk finding(s) that must be resolved before approval. The model may not be used in
+  production until resubmitted for validation.
+</div>
+{% endif %}
+
+<div class="footer">
+  Generated by Model Risk Governance Toolkit v1.0 &nbsp;|&nbsp; Report Date: {{ report_date }} &nbsp;|&nbsp;
+  SR 11-7 Compliance Reference &nbsp;|&nbsp; For internal use only.
+</div>
+
+</div><!-- .page-wrap -->
+</body>
+</html>

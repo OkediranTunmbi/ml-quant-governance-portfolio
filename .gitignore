@@ -1,0 +1,15 @@
+.env
+*.env
+how_to_run.txt
+/projects/01_tabular_ml_pipeline_credit_risk/
+__pycache__/
+.venv/
+data/
+*.pt
+*.safetensors
+*.pkl
+*.db
+*.log
+mlruns/
+.ipynb_checkpoints/
+projects/earnings_sentiment/models/checkpoints/
